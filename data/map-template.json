@@ -1,0 +1,22 @@
+{
+    "title": "Title",
+    "artist": "Artist",
+    "album": "Album",
+    "beats": [
+        {
+            "start_time": 2,
+            "end_time": 2,
+            "key": 0
+        },
+        {
+            "start_time": 10.100,
+            "end_time": 10.100,
+            "key": 1
+        },
+        {
+            "start_time": 10.900,
+            "end_time": 10.900,
+            "key": 2
+        }
+    ]
+}
