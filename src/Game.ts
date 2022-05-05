@@ -40,6 +40,8 @@ export class Game {
         [], [], [], []
     ];
 
+    private tileColor: string = 'rgba(39, 123, 202, 0.75)';
+
     constructor(canvas: HTMLCanvasElement, beatmapSrc: string, audioSrc: string) {
         this.canvas = canvas;
         this.ctx = <CanvasRenderingContext2D>canvas.getContext('2d');
@@ -229,7 +231,7 @@ export class Game {
     private drawTile() {
         this.tiles.forEach((tiles) => {
             tiles.forEach((beat) => {
-                this.drawRect(beat.toVector2(), 'red', Vector2D(this.tileWidth, this.tileWidth));
+                this.drawRect(beat.toVector2(), this.tileColor, Vector2D(this.tileWidth, this.tileWidth));
             });
         })
     }
