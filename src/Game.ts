@@ -158,7 +158,7 @@ export class Game {
         this.data?.beats.forEach((tile) => {
             if (Math.floor(tile.start_time) == Math.floor(<number>this.audio?.currentTime)) {
                 this.data?.beats.shift();
-                this.tiles?.[tile.key].push(new Tiles(Vector2D(this.control[tile.key].x, -this.tileWidth), 0));
+                this.tiles?.[tile.key].push(new Tiles(Vector2D(this.control[tile.key].x, -this.tileWidth), Vector2D(this.tileWidth, this.tileWidth), 0));
             }
         })
     }
@@ -231,7 +231,7 @@ export class Game {
     private drawTile() {
         this.tiles.forEach((tiles) => {
             tiles.forEach((beat) => {
-                this.drawRect(beat.toVector2(), this.tileColor, Vector2D(this.tileWidth, this.tileWidth));
+                this.drawRect(beat.toVector2(), this.tileColor, Vector2D(beat.width, beat.height));
             });
         })
     }
