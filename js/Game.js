@@ -6,11 +6,9 @@ export class Game {
     constructor(canvas, beatmapSrc, audioSrc) {
         this.isPaused = false;
         this.isStarted = false;
-        this.isLoading = true;
         this.perfomance = 0;
         this.score = 0;
         this.baseScore = 50;
-        this.scoreMultiplier = 0;
         this.combo = 0;
         this.speedMultiplier = 1;
         this.currentSpeed = 20;
@@ -22,6 +20,7 @@ export class Game {
         this.tiles = [
             [], [], [], []
         ];
+        this.tileColor = 'rgba(39, 123, 202, 0.75)';
         this.canvas = canvas;
         this.ctx = canvas.getContext('2d');
         if (!this.ctx)
@@ -47,7 +46,6 @@ export class Game {
             //     this.tiles?.[beat.key].push(new Tiles(Vector2D(this.control[beat.key].x, 0), 0));
             // })
         }).then(() => {
-            this.isLoading = false;
             this.initEventListener();
             this.update();
         });
@@ -118,9 +116,9 @@ export class Game {
     }
     spawnTiles() {
         this.data?.beats.forEach((tile) => {
-            if (Math.floor(tile.start_time) == Math.floor(this.audio?.currentTime)) {
+            if (tile.start_time < parseFloat(this.audio?.currentTime.toFixed(3))) {
                 this.data?.beats.shift();
-                this.tiles?.[tile.key].push(new Tiles(Vector2D(this.control[tile.key].x, -this.tileWidth), 0));
+                this.tiles?.[tile.key].push(new Tiles(Vector2D(this.control[tile.key].x, -this.tileWidth), Vector2D(this.tileWidth, this.tileWidth), 0));
             }
         });
     }
@@ -200,7 +198,7 @@ export class Game {
     drawTile() {
         this.tiles.forEach((tiles) => {
             tiles.forEach((beat) => {
-                this.drawRect(beat.toVector2(), 'red', Vector2D(this.tileWidth, this.tileWidth));
+                this.drawRect(beat.toVector2(), this.tileColor, Vector2D(beat.width, beat.height));
             });
         });
     }

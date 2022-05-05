@@ -20,12 +20,10 @@ export class Game {
 
     private isPaused: boolean = false;
     private isStarted: boolean = false;
-    private isLoading: boolean = true;
     private perfomance: number = 0;
 
     private score: number = 0;
     private baseScore: number = 50;
-    private scoreMultiplier: number = 0;
     private combo: number = 0;
     private speedMultiplier: number = 1;
     private currentSpeed: number = 20;
@@ -76,7 +74,6 @@ export class Game {
             // })
 
         }).then(() => {
-            this.isLoading = false;
             this.initEventListener();
             this.update();
         });
@@ -156,7 +153,7 @@ export class Game {
 
     private spawnTiles() {
         this.data?.beats.forEach((tile) => {
-            if (Math.floor(tile.start_time) == Math.floor(<number>this.audio?.currentTime)) {
+            if (tile.start_time < parseFloat(<string>this.audio?.currentTime.toFixed(3))) {
                 this.data?.beats.shift();
                 this.tiles?.[tile.key].push(new Tiles(Vector2D(this.control[tile.key].x, -this.tileWidth), Vector2D(this.tileWidth, this.tileWidth), 0));
             }
