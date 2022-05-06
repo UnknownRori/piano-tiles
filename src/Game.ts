@@ -24,6 +24,7 @@ export class Game {
 
     private score: number = 0;
     private baseScore: number = 50;
+    private comboThreshold: number = 0;
     private combo: number = 0;
     private speedMultiplier: number = 1;
     private currentSpeed: number = 20;
@@ -66,12 +67,10 @@ export class Game {
         await fetch(this.beatmapSrc).then((res) => res.json()).then((data) => {
             this.data = <BeatMap>data;
 
+            this.comboThreshold = Math.floor(this.data.beats.length / 2);
+
             this.generateControl();
             this.generateTrack();
-
-            // this.data.beats.forEach((beat) => {
-            //     this.tiles?.[beat.key].push(new Tiles(Vector2D(this.control[beat.key].x, 0), 0));
-            // })
 
         }).then(() => {
             this.initEventListener();
@@ -120,7 +119,10 @@ export class Game {
     protected calculateNewTilesPos() {
         this.tiles.forEach((tiles, firstIndex) => {
             tiles.forEach((tile, secondIndex) => {
-                if (tile.y > this.size.y) this.tiles[firstIndex].shift();
+                if (tile.y > this.size.y) {
+                    this.combo = 0;
+                    this.tiles[firstIndex].shift();
+                }
                 tile.y += this.currentSpeed;
             });
         })
@@ -148,7 +150,7 @@ export class Game {
     }
 
     private calculateScore() {
-        this.score += this.baseScore * this.speedMultiplier;
+        this.score += ((this.baseScore * this.speedMultiplier) * (this.combo / this.comboThreshold));
     }
 
     private spawnTiles() {
@@ -220,6 +222,7 @@ export class Game {
         this.tiles[key].map((tile, index) => {
             if ((tile.y + this.tileWidth) > this.control[0].y && (this.control[0].y + this.tileWidth) > tile.y) {
                 this.tiles[key].shift();
+                this.combo += 1;
                 this.calculateScore();
             };
         });
@@ -251,9 +254,9 @@ export class Game {
         this.drawText(<string>this.data?.title, Vector2D(0, this.size.y - (5 + 14)), '12px monospace');
         this.drawText(<string>this.data?.artist, Vector2D(0, this.size.y - (19 + 12)), '10px monospace');
 
-        this.drawText('Score : ' + <string>this.score.toString(), Vector2D(0, 24), '24px monospace');
-        this.drawText('Time  : ' + <string>this.MilisecondsToTime(<number>this.audio?.currentTime), Vector2D(0, 24 * 2), '24px monospace');
-        this.drawText(`${this.perfomance}`, Vector2D(this.size.x - 12, 12), '12px monospace');
+        this.drawText(<string>this.score.toString(), Vector2D(0, 20), '24px monospace');
+        this.drawText(<string>this.MilisecondsToTime(<number>this.audio?.currentTime), Vector2D(this.size.x - 72, 24), '24px monospace');
+        this.drawText(`${this.perfomance}`, Vector2D(this.size.x / 2, 12), '12px monospace');
         this.drawText(`${this.speedMultiplier}`, Vector2D(this.size.x - 20, this.size.y - 5), '12px monospace');
         this.drawText(`${this.combo}x`, Vector2D(this.size.x - 200, this.size.y - 40), '8rem monospace');
     }
