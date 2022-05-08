@@ -4,29 +4,224 @@
     "album": "雪翼の系譜",
     "beats": [
         {
-            "start_time": 0.0,
-            "end_time": 1.200,
+            "start_time": 0.520022,
+            "end_time": 0,
             "key": 0
         },
         {
-            "start_time": 1.9,
-            "end_time": 4,
-            "key": 2
-        },
-        {
-            "start_time": 6,
-            "end_time": 6.250,
+            "start_time": 0.939773,
+            "end_time": 0,
             "key": 1
         },
         {
-            "start_time": 6.250,
-            "end_time": 6.500,
+            "start_time": 1.380204,
+            "end_time": 0,
+            "key": 2
+        },
+        {
+            "start_time": 1.899614,
+            "end_time": 0,
+            "key": 3
+        },
+        {
+            "start_time": 2.419637,
+            "end_time": 0,
+            "key": 2
+        },
+        {
+            "start_time": 2.860022,
+            "end_time": 0,
             "key": 1
         },
         {
-            "start_time": 6.500,
-            "end_time": 6.750,
+            "start_time": 3.379501,
+            "end_time": 0,
+            "key": 0
+        },
+        {
+            "start_time": 5.970136,
+            "end_time": 0,
+            "key": 0
+        },
+        {
+            "start_time": 6.229183,
+            "end_time": 0,
+            "key": 1
+        },
+        {
+            "start_time": 6.49009,
+            "end_time": 0,
+            "key": 1
+        },
+        {
+            "start_time": 6.950204,
+            "end_time": 0,
             "key": 2
+        },
+        {
+            "start_time": 7.409954,
+            "end_time": 0,
+            "key": 3
+        },
+        {
+            "start_time": 7.869977,
+            "end_time": 0,
+            "key": 2
+        },
+        {
+            "start_time": 8.42941,
+            "end_time": 0,
+            "key": 1
+        },
+        {
+            "start_time": 8.870068,
+            "end_time": 0,
+            "key": 3
+        },
+        {
+            "start_time": 9.369637,
+            "end_time": 0,
+            "key": 2
+        },
+        {
+            "start_time": 11.96975,
+            "end_time": 0,
+            "key": 1
+        },
+        {
+            "start_time": 12.429546,
+            "end_time": 0,
+            "key": 3
+        },
+        {
+            "start_time": 12.890136,
+            "end_time": 0,
+            "key": 2
+        },
+        {
+            "start_time": 13.729569,
+            "end_time": 0,
+            "key": 2
+        },
+        {
+            "start_time": 13.969954,
+            "end_time": 0,
+            "key": 3
+        },
+        {
+            "start_time": 15.029501,
+            "end_time": 0,
+            "key": 0
+        },
+        {
+            "start_time": 15.209659,
+            "end_time": 0,
+            "key": 1
+        },
+        {
+            "start_time": 15.469546,
+            "end_time": 0,
+            "key": 2
+        },
+        {
+            "start_time": 15.950022,
+            "end_time": 0,
+            "key": 1
+        },
+        {
+            "start_time": 16.720022,
+            "end_time": 0,
+            "key": 3
+        },
+        {
+            "start_time": 16.979523,
+            "end_time": 0,
+            "key": 2
+        },
+        {
+            "start_time": 18.119637,
+            "end_time": 0,
+            "key": 1
+        },
+        {
+            "start_time": 18.320022,
+            "end_time": 0,
+            "key": 2
+        },
+        {
+            "start_time": 18.52,
+            "end_time": 0,
+            "key": 3
+        },
+        {
+            "start_time": 19.020022,
+            "end_time": 0,
+            "key": 1
+        },
+        {
+            "start_time": 19.759591,
+            "end_time": 0,
+            "key": 1
+        },
+        {
+            "start_time": 20.000204,
+            "end_time": 0,
+            "key": 2
+        },
+        {
+            "start_time": 20.999614,
+            "end_time": 0,
+            "key": 0
+        },
+        {
+            "start_time": 21.459591,
+            "end_time": 0,
+            "key": 1
+        },
+        {
+            "start_time": 21.959501,
+            "end_time": 0,
+            "key": 2
+        },
+        {
+            "start_time": 22.400272,
+            "end_time": 0,
+            "key": 3
+        },
+        {
+            "start_time": 22.939818,
+            "end_time": 0,
+            "key": 0
+        },
+        {
+            "start_time": 24.539909,
+            "end_time": 0,
+            "key": 1
+        },
+        {
+            "start_time": 24.940022,
+            "end_time": 0,
+            "key": 2
+        },
+        {
+            "start_time": 26.019115,
+            "end_time": 0,
+            "key": 1
+        },
+        {
+            "start_time": 26.459569,
+            "end_time": 0,
+            "key": 3
+        },
+        {
+            "start_time": 27.479342,
+            "end_time": 0,
+            "key": 0
+        },
+        {
+            "start_time": 27.919818,
+            "end_time": 0,
+            "key": 3
         }
     ]
 }

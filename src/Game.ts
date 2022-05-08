@@ -8,6 +8,9 @@ import { Vector2 } from "./Interface/Vector2.js";
 
 export class Game {
 
+    private recordMode: boolean = false;
+    private recordData: Array<Beat> = [];
+
     private canvas: HTMLCanvasElement;
     private ctx: CanvasRenderingContext2D;
     private canvasGradient?: CanvasGradient;
@@ -31,6 +34,7 @@ export class Game {
     private baseSpeed: number = 20;
 
     private tileWidth: number = 100;
+    private tileHeight: number = 65;
 
     private track: Array<Track> = []
     private control: Array<Control> = [];
@@ -60,7 +64,13 @@ export class Game {
 
     public init() {
         this.audio = new Audio(this.audioSrc);
-        this.loadMap();
+        if (!this.recordMode) this.loadMap();
+        else {
+            this.generateControl();
+            this.generateTrack();
+            this.initEventListener();
+            this.update();
+        }
     }
 
     protected async loadMap() {
@@ -147,6 +157,10 @@ export class Game {
         document.body.addEventListener('keyup', (event) => {
             this.handlePress(event.key, 'keyup');
         });
+
+        document.body.addEventListener('click', (event) => {
+            this.handleTouch(Vector2D(event.clientX, event.clientY));
+        });
     }
 
     private calculateScore() {
@@ -157,7 +171,7 @@ export class Game {
         this.data?.beats.forEach((tile) => {
             if (tile.start_time < parseFloat(<string>this.audio?.currentTime.toFixed(3))) {
                 this.data?.beats.shift();
-                this.tiles?.[tile.key].push(new Tiles(Vector2D(this.control[tile.key].x, -this.tileWidth), Vector2D(this.tileWidth, this.tileWidth), 0));
+                this.tiles?.[tile.key].push(new Tiles(Vector2D(this.control[tile.key].x, -this.tileHeight), Vector2D(this.tileWidth, this.tileHeight), 0));
             }
         })
     }
@@ -168,6 +182,7 @@ export class Game {
                 if (type == 'keydown') {
                     this.control[0].active = true
                     this.collisionHandler(0);
+                    if (this.recordMode) this.Record(0);
                 }
                 else this.control[0].active = false;
                 break;
@@ -175,6 +190,7 @@ export class Game {
                 if (type == 'keydown') {
                     this.control[1].active = true;
                     this.collisionHandler(1);
+                    if (this.recordMode) this.Record(1);
                 }
                 else this.control[1].active = false;
                 break;
@@ -182,6 +198,7 @@ export class Game {
                 if (type == 'keydown') {
                     this.control[2].active = true;
                     this.collisionHandler(2);
+                    if (this.recordMode) this.Record(2);
                 }
                 else this.control[2].active = false;
                 break;
@@ -189,6 +206,7 @@ export class Game {
                 if (type == 'keydown') {
                     this.control[3].active = true;
                     this.collisionHandler(3);
+                    if (this.recordMode) this.Record(3);
                 }
                 else this.control[3].active = false;
                 break;
@@ -203,10 +221,23 @@ export class Game {
             case '=':
                 if (type == 'keydown') this.updateSpeed('=');
                 break;
+            case ' ':
+                this.exportRecord();
+                break;
             default:
                 console.log({ 'key': key, 'type': type });
                 break;
         }
+    }
+
+    private handleTouch(position: Vector2) {
+        this.control.forEach((control, index) => {
+            if (this.collisionControlDetector(position.y, 0, index) &&
+                (control.x + this.tileWidth) > position.x && control.x < position.x
+            ) {
+                this.collisionHandler(index);
+            }
+        })
     }
 
     private updateSpeed(key: string) {
@@ -220,12 +251,17 @@ export class Game {
 
     private collisionHandler(key: number) {
         this.tiles[key].map((tile, index) => {
-            if ((tile.y + this.tileWidth) > this.control[0].y && (this.control[0].y + this.tileWidth) > tile.y) {
+            if (this.collisionControlDetector(tile.y, tile.height, key)) {
                 this.tiles[key].shift();
                 this.combo += 1;
                 this.calculateScore();
-            };
+            }
         });
+    }
+
+    private collisionControlDetector(y: number, height: number, key: number): boolean {
+        if ((y + height) > this.control[key].y && (this.control[key].y + this.tileWidth) > y) return true;
+        return false;
     }
 
     private drawTile() {
@@ -333,5 +369,17 @@ export class Game {
     private drawRect(pos: Vector2, style: string, size: Vector2) {
         this.ctx.fillStyle = style;
         this.ctx.fillRect(pos.x, pos.y, size.x, size.y);
+    }
+
+    private Record(key: number) {
+        this.recordData.push({
+            'start_time': <number>this.audio?.currentTime,
+            'end_time': 0,
+            'key': key
+        });
+    }
+
+    private exportRecord() {
+        console.log(this.recordData);
     }
 }
