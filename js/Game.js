@@ -94,11 +94,11 @@ export class Game {
     calculateNewTilesPos() {
         this.tiles.forEach((tiles, firstIndex) => {
             tiles.forEach((tile, secondIndex) => {
-                if (tile.y > this.size.y) {
+                if (tile.pos.y > this.size.y) {
                     this.combo = 0;
                     this.tiles[firstIndex].shift();
                 }
-                tile.y += this.currentSpeed;
+                tile.pos.y += this.currentSpeed;
             });
         });
     }
@@ -132,7 +132,7 @@ export class Game {
         this.data?.beats.forEach((tile) => {
             if (tile.start_time < parseFloat(this.audio?.currentTime.toFixed(3))) {
                 this.data?.beats.shift();
-                this.tiles?.[tile.key].push(new Tiles(Vector2D(this.control[tile.key].x, -this.tileHeight), Vector2D(this.tileWidth, this.tileHeight), 0));
+                this.tiles?.[tile.key].push(new Tiles(Vector2D(this.control[tile.key].pos.x, -this.tileHeight), Vector2D(this.tileWidth, this.tileHeight), 0));
             }
         });
     }
@@ -205,7 +205,7 @@ export class Game {
     handleTouch(position) {
         this.control.forEach((control, index) => {
             if (this.collisionControlDetector(position.y, 0, index) &&
-                (control.x + this.tileWidth) > position.x && control.x < position.x) {
+                (control.pos.x + this.tileWidth) > position.x && control.pos.x < position.x) {
                 this.collisionHandler(index);
             }
         });
@@ -221,7 +221,7 @@ export class Game {
     }
     collisionHandler(key) {
         this.tiles[key].map((tile, index) => {
-            if (this.collisionControlDetector(tile.y, tile.height, key)) {
+            if (this.collisionControlDetector(tile.pos.y, tile.size.y, key)) {
                 this.tiles[key].shift();
                 this.combo += 1;
                 this.calculateScore();
@@ -229,14 +229,14 @@ export class Game {
         });
     }
     collisionControlDetector(y, height, key) {
-        if ((y + height) > this.control[key].y && (this.control[key].y + this.tileWidth) > y)
+        if ((y + height) > this.control[key].pos.y && (this.control[key].pos.y + this.tileWidth) > y)
             return true;
         return false;
     }
     drawTile() {
         this.tiles.forEach((tiles) => {
             tiles.forEach((beat) => {
-                this.drawRect(beat.toVector2(), this.tileColor, Vector2D(beat.width, beat.height));
+                this.drawRect(beat.toPosVector2(), this.tileColor, beat.toSizeVector2());
             });
         });
     }
@@ -279,7 +279,7 @@ export class Game {
         const bottomHeight = this.size.y - this.tileWidth;
         Array(4).fill(1).forEach((_, index) => {
             let convertMiddleWidth = (middleWidth - this.tileWidth * 2) + ((2 + this.tileWidth) * index);
-            this.control.push(new Control(Vector2D(convertMiddleWidth, bottomHeight), index));
+            this.control.push(new Control(Vector2D(convertMiddleWidth, bottomHeight), Vector2D(this.tileWidth, this.tileWidth), index));
         });
         this.drawControl();
     }
@@ -287,7 +287,8 @@ export class Game {
         let color = 'blue';
         let secondary = 'red';
         this.control.forEach((control, index) => {
-            const centerControl = Vector2D(control.x + (this.tileWidth / 2 - 5), control.y + (this.tileWidth / 2 + 5));
+            const centerControl = Vector2D(control.pos.x + (this.tileWidth / 2 - 5), control.pos.y + (this.tileWidth / 2 + 5));
+            const topBox = Vector2D(control.size.x, control.size.y / 4);
             if (control.active) {
                 color = 'rgba(31, 102, 255, 0.8)';
                 secondary = 'rgb(0, 204, 255)';
@@ -296,8 +297,8 @@ export class Game {
                 color = 'rgba(0, 4, 255, 0.600)';
                 secondary = 'rgba(0, 204, 255, 0.750)';
             }
-            this.drawRect(control.toVector2(), color, Vector2D(this.tileWidth, this.tileWidth));
-            this.drawRect(control.toVector2(), secondary, Vector2D(this.tileWidth, this.tileWidth / 4));
+            this.drawRect(control.toPosVector2(), color, control.toSizeVector2());
+            this.drawRect(control.toPosVector2(), secondary, topBox);
             this.drawText(this.keybinds[index], centerControl, '24px monospace');
         });
     }
@@ -305,13 +306,13 @@ export class Game {
         const middleWidth = (this.size.x / 2);
         Array(4).fill(1).forEach((_, index) => {
             const convertMiddleWidth = (middleWidth - this.tileWidth * 2) + ((2 + this.tileWidth) * index);
-            this.track.push(new Track(Vector2D(convertMiddleWidth, 0), index));
+            this.track.push(new Track(Vector2D(convertMiddleWidth, 0), Vector2D(this.tileWidth, this.size.y - this.tileWidth), index));
         });
         this.drawTrack();
     }
     drawTrack() {
         this.track.forEach((track, index) => {
-            this.drawRect(track.toVector2(), 'rgba(68, 87, 199, 0.616)', Vector2D(this.tileWidth, this.size.y - this.tileWidth));
+            this.drawRect(track.toPosVector2(), 'rgba(68, 87, 199, 0.616)', track.toSizeVector2());
         });
     }
     drawText(text, pos, style) {

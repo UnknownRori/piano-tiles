@@ -1,12 +1,14 @@
-import { Vector2D } from "../Helpers/Vector2.js";
 export class Track {
-    constructor(pos, key) {
-        this.x = pos.x;
-        this.y = pos.y;
+    constructor(pos, size, key) {
+        this.pos = pos;
+        this.size = size;
         this.key = key;
     }
-    toVector2() {
-        return Vector2D(this.x, this.y);
+    toPosVector2() {
+        return this.pos;
+    }
+    toSizeVector2() {
+        return this.size;
     }
 }
 //# sourceMappingURL=Track.js.map

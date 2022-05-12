@@ -1,13 +1,15 @@
-import { Vector2D } from "../Helpers/Vector2.js";
 export class Control {
-    constructor(pos, key) {
+    constructor(pos, size, key) {
         this.active = false;
-        this.x = pos.x;
-        this.y = pos.y;
+        this.pos = pos;
+        this.size = size;
         this.key = key;
     }
-    toVector2() {
-        return Vector2D(this.x, this.y);
+    toPosVector2() {
+        return this.pos;
+    }
+    toSizeVector2() {
+        return this.size;
     }
 }
 //# sourceMappingURL=Control.js.map

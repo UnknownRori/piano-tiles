@@ -1,14 +1,14 @@
-import { Vector2D } from "../Helpers/Vector2.js";
 export class Tiles {
     constructor(pos, size, key) {
-        this.x = pos.x;
-        this.y = pos.y;
-        this.width = size.x;
-        this.height = size.y;
+        this.pos = pos;
+        this.size = size;
         this.key = key;
     }
-    toVector2() {
-        return Vector2D(this.x, this.y);
+    toPosVector2() {
+        return this.pos;
+    }
+    toSizeVector2() {
+        return this.size;
     }
 }
 //# sourceMappingURL=Tiles.js.map
