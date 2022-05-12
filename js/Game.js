@@ -139,6 +139,8 @@ export class Game {
     handlePress(key, type) {
         switch (key) {
             case 'd':
+                if (!this.isStarted || this.isPaused)
+                    return;
                 if (type == 'keydown') {
                     this.control[0].active = true;
                     this.collisionHandler(0);
@@ -149,6 +151,8 @@ export class Game {
                     this.control[0].active = false;
                 break;
             case 'f':
+                if (!this.isStarted || this.isPaused)
+                    return;
                 if (type == 'keydown') {
                     this.control[1].active = true;
                     this.collisionHandler(1);
@@ -159,6 +163,8 @@ export class Game {
                     this.control[1].active = false;
                 break;
             case 'j':
+                if (!this.isStarted || this.isPaused)
+                    return;
                 if (type == 'keydown') {
                     this.control[2].active = true;
                     this.collisionHandler(2);
@@ -169,6 +175,8 @@ export class Game {
                     this.control[2].active = false;
                 break;
             case 'k':
+                if (!this.isStarted || this.isPaused)
+                    return;
                 if (type == 'keydown') {
                     this.control[3].active = true;
                     this.collisionHandler(3);
@@ -203,6 +211,8 @@ export class Game {
         }
     }
     handleTouch(position) {
+        if (!this.isStarted)
+            this.start();
         this.control.forEach((control, index) => {
             if (this.collisionControlDetector(position.y, 0, index) &&
                 (control.pos.x + this.tileWidth) > position.x && control.pos.x < position.x) {
