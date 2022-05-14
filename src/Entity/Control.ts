@@ -12,12 +12,4 @@ export class Control implements Entity {
         this.size = size;
         this.key = key;
     }
-
-    public toPosVector2(): Vector2 {
-        return this.pos;
-    }
-
-    public toSizeVector2(): Vector2 {
-        return this.size;
-    }
 }

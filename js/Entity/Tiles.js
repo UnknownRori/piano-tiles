@@ -1,14 +1,9 @@
 export class Tiles {
-    constructor(pos, size, key) {
+    constructor(pos, size, velocity, key) {
         this.pos = pos;
         this.size = size;
         this.key = key;
-    }
-    toPosVector2() {
-        return this.pos;
-    }
-    toSizeVector2() {
-        return this.size;
+        this.velocity = velocity;
     }
 }
 //# sourceMappingURL=Tiles.js.map

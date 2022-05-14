@@ -5,11 +5,5 @@ export class Control {
         this.size = size;
         this.key = key;
     }
-    toPosVector2() {
-        return this.pos;
-    }
-    toSizeVector2() {
-        return this.size;
-    }
 }
 //# sourceMappingURL=Control.js.map

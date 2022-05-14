@@ -1,6 +1,7 @@
 import { Control } from "./Entity/Control.js";
 import { Tiles } from "./Entity/Tiles.js";
 import { Track } from "./Entity/Track.js";
+import { MilisecondsToTime } from "./Helpers/MilisecondsToTime.js";
 import { Vector2D } from "./Helpers/Vector2.js";
 import { Beat } from "./Interface/Beat.js";
 import { BeatMap } from "./Interface/BeatMap.js";
@@ -29,9 +30,8 @@ export class Game {
     private baseScore: number = 50;
     private comboThreshold: number = 0;
     private combo: number = 0;
-    private speedMultiplier: number = 1;
-    private currentSpeed: number = 20;
-    private baseSpeed: number = 20;
+    private speedMultiplier: number = 4;
+    private speed: number = 20;
 
     private tileWidth: number = 100;
     private tileHeight: number = 65;
@@ -133,20 +133,9 @@ export class Game {
                     this.combo = 0;
                     this.tiles[firstIndex].shift();
                 }
-                tile.pos.y += this.currentSpeed;
+                tile.pos.y += tile.velocity.y;
             });
         })
-    }
-
-    private MilisecondsToTime(miliseconds: number): string {
-        let hours: number | string = Math.floor(miliseconds / 3600);
-        let minutes: number | string = Math.floor((miliseconds - (hours * 3600)) / 60);
-        let seconds: number | string = Math.floor(miliseconds - (hours * 3600) - (minutes * 60));
-
-        if (minutes < 10) { minutes = "0" + minutes; }
-        if (seconds < 10) { seconds = "0" + seconds; }
-
-        return `${minutes}:${seconds}`;
     }
 
     private initEventListener() {
@@ -169,11 +158,20 @@ export class Game {
 
     private spawnTiles() {
         this.data?.beats.forEach((tile) => {
-            if (tile.start_time < parseFloat(<string>this.audio?.currentTime.toFixed(3))) {
+            const speed: Vector2 = Vector2D(0, (this.size.y / this.tileWidth) * this.speedMultiplier);
+
+            if (tile.start_time - (speed.y + 10) / 100 < parseFloat(<string>this.audio?.currentTime.toFixed(3))) {
                 this.data?.beats.shift();
-                this.tiles?.[tile.key].push(new Tiles(
-                    Vector2D(this.control[tile.key].pos.x, -this.tileHeight),
-                    Vector2D(this.tileWidth, this.tileHeight), 0)
+
+                const size: Vector2 = Vector2D(this.tileWidth, this.tileHeight);
+
+                this.tiles?.[tile.key].push(
+                    new Tiles(
+                        Vector2D(this.control[tile.key].pos.x, -this.tileHeight),
+                        size,
+                        speed,
+                        tile.key
+                    )
                 );
             }
         })
@@ -254,11 +252,15 @@ export class Game {
 
     private updateSpeed(key: string) {
         if (key == '-') {
-            this.speedMultiplier -= 0.5;
-        } else {
             this.speedMultiplier += 0.5;
+        } else {
+            this.speedMultiplier -= 0.5;
         }
-        this.currentSpeed = this.baseSpeed * this.speedMultiplier;
+        this.tiles.map((tiles) => {
+            tiles.map((tile) => {
+                tile.velocity = Vector2D(0, (this.size.y / this.tileWidth) * this.speedMultiplier);
+            })
+        })
     }
 
     private collisionHandler(key: number) {
@@ -279,7 +281,7 @@ export class Game {
     private drawTile() {
         this.tiles.forEach((tiles) => {
             tiles.forEach((beat) => {
-                this.drawRect(beat.toPosVector2(), this.tileColor, beat.toSizeVector2());
+                this.drawRect(beat.pos, this.tileColor, beat.size);
             });
         })
     }
@@ -302,8 +304,8 @@ export class Game {
         this.drawText(<string>this.data?.title, Vector2D(0, this.size.y - (5 + 14)), '12px monospace');
         this.drawText(<string>this.data?.artist, Vector2D(0, this.size.y - (19 + 12)), '10px monospace');
 
-        this.drawText(<string>this.score.toString(), Vector2D(0, 20), '24px monospace');
-        this.drawText(<string>this.MilisecondsToTime(<number>this.audio?.currentTime), Vector2D(this.size.x - 72, 24), '24px monospace');
+        this.drawText(<string>Math.floor(this.score).toString(), Vector2D(0, 20), '24px monospace');
+        this.drawText(<string>MilisecondsToTime(<number>this.audio?.currentTime), Vector2D(this.size.x - 72, 24), '24px monospace');
         this.drawText(`${this.perfomance}`, Vector2D(this.size.x / 2, 12), '12px monospace');
         this.drawText(`${this.speedMultiplier}`, Vector2D(this.size.x - 20, this.size.y - 5), '12px monospace');
         this.drawText(`${this.combo}x`, Vector2D(this.size.x - 200, this.size.y - 40), '8rem monospace');
@@ -353,8 +355,8 @@ export class Game {
                 color = 'rgba(0, 4, 255, 0.600)';
                 secondary = 'rgba(0, 204, 255, 0.750)';
             }
-            this.drawRect(control.toPosVector2(), color, control.toSizeVector2());
-            this.drawRect(control.toPosVector2(), secondary, topBox);
+            this.drawRect(control.pos, color, control.size);
+            this.drawRect(control.pos, secondary, topBox);
             this.drawText(this.keybinds[index], centerControl, '24px monospace');
         })
     }
@@ -365,7 +367,12 @@ export class Game {
         Array(4).fill(1).forEach((_, index) => {
             const convertMiddleWidth = (middleWidth - this.tileWidth * 2) + ((2 + this.tileWidth) * index);
 
-            this.track.push(new Track(Vector2D(convertMiddleWidth, 0), Vector2D(this.tileWidth, this.size.y - this.tileWidth), index));
+            this.track.push(new Track(
+                Vector2D(convertMiddleWidth, 0),
+                Vector2D(this.tileWidth, this.size.y - this.tileWidth)
+                , index
+            )
+            );
         })
 
         this.drawTrack();
@@ -373,7 +380,7 @@ export class Game {
 
     private drawTrack() {
         this.track.forEach((track, index) => {
-            this.drawRect(track.toPosVector2(), 'rgba(68, 87, 199, 0.616)', track.toSizeVector2());
+            this.drawRect(track.pos, 'rgba(68, 87, 199, 0.616)', track.size);
         })
     }
 
